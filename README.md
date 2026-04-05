@@ -5,8 +5,8 @@ This repository contains the backend system for a robust Finance Dashboard, desi
 It was developed strictly adhering to industry-standard backend design principles, suitable for production-level evaluation.
 
 ## 🚀 Live Demo & Documentation
-- **Live Base URL**: *[Your Render Deployed URL Here]* (e.g., `https://zorvyn-backend-app.onrender.com`)
-- **API Documentation (Swagger)**: *[Your Render Deployed URL Here]*/api-docs
+- **Live Base URL**: *[https://zorvyn-assessment-egwk.onrender.com]*
+- **API Documentation (Swagger)**: *[https://zorvyn-assessment-egwk.onrender.com]*/api-docs
   - All APIs are rigorously documented. You can execute requests visually via the Swagger UI.
 
 ---
