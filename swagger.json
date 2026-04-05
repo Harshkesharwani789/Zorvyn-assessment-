@@ -1,0 +1,216 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Finance Dashboard API",
+    "version": "1.0.0",
+    "description": "API documentation for the Finance Dashboard System."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "User created" }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "Login to get JWT",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Successful login" }
+        }
+      }
+    },
+    "/api/records": {
+      "get": {
+        "summary": "Get all records with advanced cursor/offset pagination",
+        "parameters": [
+          { "in": "query", "name": "cursor", "schema": { "type": "string" }, "description": "ID of the last record seen (Cursor-based pagination)" },
+          { "in": "query", "name": "limit", "schema": { "type": "integer" }, "description": "Count of records to fetch" },
+          { "in": "query", "name": "page", "schema": { "type": "integer" }, "description": "Page number (Offset-based pagination)" },
+          { "in": "query", "name": "type", "schema": { "type": "string" } },
+          { "in": "query", "name": "category", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Array of records with meta" }
+        }
+      },
+      "post": {
+        "summary": "Create a new record (Admin)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": { "type": "number" },
+                  "type": { "type": "string", "enum": ["INCOME", "EXPENSE"] },
+                  "category": { "type": "string" },
+                  "date": { "type": "string", "format": "date-time" },
+                  "notes": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Record created" } }
+      }
+    },
+    "/api/records/{id}": {
+      "get": {
+        "summary": "Get a specific record by ID (Analyst, Admin)",
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" }, "description": "Record ID" }
+        ],
+        "responses": { "200": { "description": "Record details" }, "404": { "description": "Record not found" } }
+      },
+      "patch": {
+        "summary": "Update a specific record (Admin only)",
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" }, "description": "Record ID" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": { "type": "number" },
+                  "type": { "type": "string", "enum": ["INCOME", "EXPENSE"] },
+                  "category": { "type": "string" },
+                  "date": { "type": "string", "format": "date-time" },
+                  "notes": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Record updated" }, "400": { "description": "Validation Error" } }
+      },
+      "delete": {
+        "summary": "Delete a record (Admin only)",
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" }, "description": "Record ID" }
+        ],
+        "responses": { "204": { "description": "Record deleted successfully" } }
+      }
+    },
+    "/api/records/summary": {
+      "get": {
+        "summary": "Get Dashboard Summaries (Viewer, Analyst, Admin)",
+        "parameters": [
+          { "in": "query", "name": "startDate", "schema": { "type": "string", "format": "date" } },
+          { "in": "query", "name": "endDate", "schema": { "type": "string", "format": "date" } }
+        ],
+        "responses": { "200": { "description": "Dashboard summary object" } }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "summary": "List all users (Admin only)",
+        "responses": { "200": { "description": "Returns array of users" } }
+      }
+    },
+    "/api/users/{id}": {
+      "patch": {
+        "summary": "Update user details like role or status (Admin only)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "User ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "enum": ["VIEWER", "ANALYST"]
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["ACTIVE", "INACTIVE"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully"
+          },
+          "400": {
+            "description": "Validation Error"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    }
+  }
+}
