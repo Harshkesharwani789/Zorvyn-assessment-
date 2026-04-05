@@ -9,7 +9,7 @@ import recordRoutes from './routes/recordRoutes';
 
 const app = express();
 
-const swaggerDocument = JSON.parse(fs.readFileSync(path.join(__dirname, '../swagger.json'), 'utf8'));
+const swaggerDocument = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'swagger.json'), 'utf8'));
 
 app.use(cors());
 app.use(express.json());
